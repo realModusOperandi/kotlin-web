@@ -1,3 +1,4 @@
+import net.wasdev.wlp.gradle.plugins.extensions.FeatureExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import net.wasdev.wlp.gradle.plugins.extensions.ServerExtension
 
@@ -25,6 +26,8 @@ dependencies {
 liberty {
     server = ServerExtension("defaultServer")
     server.dropins = listOf(tasks["war"])
+    server.features = FeatureExtension()
+    server.features.name = listOf("microProfile-2.1")
 }
 
 tasks["clean"].dependsOn(tasks["libertyStop"])
