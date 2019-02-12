@@ -3,8 +3,8 @@ import net.wasdev.wlp.gradle.plugins.extensions.ServerExtension
 
 plugins {
     war
-    id("net.wasdev.wlp.gradle.plugins.Liberty").version("2.6.2-SNAPSHOT")
-    kotlin("jvm") version "1.3.11"
+    id("net.wasdev.wlp.gradle.plugins.Liberty").version("2.6.3")
+    kotlin("jvm") version "1.3.21"
 }
 
 repositories {
@@ -18,7 +18,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 
-    libertyRuntime("io.openliberty:openliberty-runtime:18.0.0.4")
+    libertyRuntime("io.openliberty:openliberty-runtime:19.0.0.1")
 
 }
 
