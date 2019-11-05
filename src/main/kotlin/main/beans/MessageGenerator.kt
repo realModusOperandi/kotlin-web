@@ -5,7 +5,7 @@ import kotlin.random.Random
 
 @ApplicationScoped
 open class MessageGenerator {
-    open fun randomMessage(): Message {
+    open fun randomMessage(): RandomMessage {
         val result = Random.nextInt(20)
         val message = when (result) {
             in 0..4 -> "low"
@@ -15,6 +15,6 @@ open class MessageGenerator {
             else -> "impossible"
         }
         val resultString = "Wow, you got ${result}! That's ${message}!"
-        return Message(result, resultString)
+        return RandomMessage(result, resultString)
     }
 }

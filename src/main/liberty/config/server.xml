@@ -3,13 +3,58 @@
 
     <!-- Enable features -->
     <featureManager>
-        <feature>microProfile-2.1</feature>
+        <feature>microProfile-3.0</feature>
+        <feature>ejb-3.2</feature>
+        <feature>mdb-3.2</feature>
+        <feature>wasJmsServer-1.0</feature>
+        <feature>wasJmsClient-2.0</feature>
     </featureManager>
 
     <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
     <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
                   httpPort="9080"
                   httpsPort="9443" />
+
+    <messagingEngine id="myMessagingEngine">
+        <queue id="LocalQueue" />
+        <queue id="RemoteQueue" />
+        <queue id="MDBQueue" />
+    </messagingEngine>
+
+    <wasJmsEndpoint id="InboundJmsCommsEndpoint" host="localhost" wasJmsPort="${jmsPort}" wasJmsSSLPort="${jmsSslPort}" />
+
+    <variable name="jms.port" value="${jmsPort}" />
+    <variable name="jms.ssl.port" value="${jmsSslPort}" />
+
+    <jmsConnectionFactory jndiName="jms/localCF">
+        <properties.wasJms />
+    </jmsConnectionFactory>
+
+    <jmsConnectionFactory jndiName="jms/remoteCF">
+        <properties.wasJms remoteServerAddress="localhost:${jms.port}:BootstrapBasicMessaging" />
+    </jmsConnectionFactory>
+
+    <jmsQueueConnectionFactory jndiName="jms/localMessageCF">
+        <properties.wasJms />
+    </jmsQueueConnectionFactory>
+
+    <jmsQueue jndiName="jms/jmsQueue1">
+        <properties.wasJms queueName="LocalQueue" />
+    </jmsQueue>
+
+    <jmsQueue jndiName="jms/jmsRemoteQueue">
+        <properties.wasJms queueName="RemoteQueue" />
+    </jmsQueue>
+
+    <!-- NOTE: id must match name of ear/name of war/name of bean -->
+    <jmsActivationSpec id="kotlin-web/LocalMessageConsumer">
+        <properties.wasJms destination="jms/jmsLocalMessageQueue" />
+    </jmsActivationSpec>
+
+    <jmsQueue jndiName="jms/jmsLocalMessageQueue">
+        <properties.wasJms queueName="MDBQueue" />
+    </jmsQueue>
 
     <!-- Automatically expand WAR files and EAR files -->
     <applicationManager autoExpand="true"/>

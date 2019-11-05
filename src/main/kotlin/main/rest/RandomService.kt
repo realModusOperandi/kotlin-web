@@ -1,6 +1,6 @@
 package main.rest
 
-import main.beans.Message
+import main.beans.RandomMessage
 import main.beans.MessageGenerator
 import javax.inject.Inject
 import javax.ws.rs.GET
@@ -14,7 +14,7 @@ class RandomService {
 
     @GET
     @Produces("application/json")
-    fun getMessage(): Message {
+    fun getMessage(): RandomMessage {
         return mg.randomMessage()
     }
 }

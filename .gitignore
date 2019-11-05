@@ -6,3 +6,8 @@ build
 
 # Ignore IDEA files
 .idea
+
+# Ignore frontend build files
+**/node_modules
+**/node
+src/main/webapp
