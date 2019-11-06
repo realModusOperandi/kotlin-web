@@ -6,7 +6,7 @@ import {
   Tabs,
   Tab,
   TextInput,
-  ToastNotification
+  ToastNotification, ToastNotificationProps, TabProps
 } from 'carbon-components-react';
 import axios from 'axios';
 
@@ -17,6 +17,9 @@ const props = {
     role: 'navigation',
   },
   tab: {
+    handleTabAnchorFocus: () => {},
+    handleTabClick: () => {},
+    handleTabKeyDown: () => {},
     href: '#',
     role: 'presentation',
     tabIndex: 0,
@@ -25,9 +28,9 @@ const props = {
 
 const LandingPage = () => {
   const [testMessage, setTestMessage] = useState('');
-  const [toastProps, setToastProps] = useState([]);
+  const [toastProps, setToastProps] = useState<ToastNotificationProps[]>([]);
 
-  const arePropsEqual = (a, b) => {
+  const arePropsEqual = (a: any, b: any) => {
     // Create arrays of property names
     let aProps = Object.getOwnPropertyNames(a);
     let bProps = Object.getOwnPropertyNames(b);
@@ -53,24 +56,24 @@ const LandingPage = () => {
     return true;
   };
 
-  const showAndHideToast = async (props) => {
+  const showAndHideToast = async (props: ToastNotificationProps) => {
     showToast(props);
     await new Promise((resolve) => setTimeout(resolve, 5000));
     hideToast(props);
   };
 
-  const showToast = (props) => {
+  const showToast = (props: ToastNotificationProps) => {
     setToastProps(currentProps => currentProps.concat([props]));
   };
 
-  const hideToast = (props) => {
+  const hideToast = (props: ToastNotificationProps) => {
     setToastProps(currentProps => currentProps.filter(prop => !arePropsEqual(prop, props)));
   };
 
-  const sendLocalMessage = async (message) => {
+  const sendLocalMessage = async (message: string) => {
     const response = await axios.post(`${window.location.origin}/kotlin-web/rest/jms/local/echo`, message);
     const result = response.data;
-    const responseProps = {
+    const responseProps: ToastNotificationProps = {
       title: 'Response',
       subtitle: 'Local queue',
       caption: result[0],
@@ -80,10 +83,10 @@ const LandingPage = () => {
     await showAndHideToast(responseProps);
   };
 
-  const sendRemoteMessage = async (message) => {
+  const sendRemoteMessage = async (message: string) => {
     const response = await axios.post(`${window.location.origin}/kotlin-web/rest/jms/remote/send`, message);
     const result = response.data;
-    const responseProps = {
+    const responseProps: ToastNotificationProps = {
       title: 'Status',
       subtitle: 'Remote queue',
       caption: result[0],
@@ -95,7 +98,7 @@ const LandingPage = () => {
 
   const receiveMessage = async () => {
     const response = await axios.get(`${window.location.origin}/kotlin-web/rest/jms/remote/receive`);
-    let props = {};
+    let props: ToastNotificationProps;
     if (response.data.toString().indexOf('error') !== -1) {
       props = {
         title: 'Receive Failed',
@@ -115,10 +118,10 @@ const LandingPage = () => {
     await showAndHideToast(props);
   };
 
-  const produceMessageForBean = async (message) => {
+  const produceMessageForBean = async (message: string) => {
     const response = await axios.post(`${window.location.origin}/kotlin-web/rest/jms/mdb/do_message`, message);
     const result = response.data;
-    const responseProps = {
+    const responseProps: ToastNotificationProps = {
       title: 'Status',
       subtitle: 'Local message producer',
       caption: result[0],
