@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import RepoTable from './RepoTable';
 import { gql } from 'apollo-boost';
-import { Query } from 'react-apollo';
+import {Query, QueryResult} from 'react-apollo';
 import { Link, DataTableSkeleton, Pagination } from 'carbon-components-react';
+import {Header} from "./types";
+import {LinkProps} from "./types";
 
 const REPO_QUERY = gql`
   query REPO_QUERY {
@@ -38,7 +40,7 @@ const REPO_QUERY = gql`
   }
 `;
 
-const headers = [
+const headers: Header[] = [
   {
     key: 'name',
     header: 'Name',
@@ -65,21 +67,21 @@ const headers = [
   },
 ];
 
-const LinkList = ({ url, homepageUrl }) => (
+const LinkList = (props: LinkProps) => (
   <ul style={{ display: 'flex' }}>
     <li>
-      <Link href={url}>GitHub</Link>
+      <Link href={props.url}>GitHub</Link>
     </li>
-    {homepageUrl && (
+    {props.homepageUrl && (
       <li>
         <span>&nbsp;|&nbsp;</span>
-        <Link href={homepageUrl}>Homepage</Link>
+        <Link href={props.homepageUrl}>Homepage</Link>
       </li>
     )}
   </ul>
 );
 
-const getRowItems = rows =>
+const getRowItems = (rows: any[]): any[] =>
   rows.map(row => ({
     ...row,
     key: row.id,
@@ -100,9 +102,9 @@ const RepoPage = () => {
       <div className="bx--row repo-page__r1">
         <div className="bx--col-lg-16">
           <Query query={REPO_QUERY}>
-            {({ loading, error, data: { organization } }) => {
+            {(result: QueryResult) => {
               // Wait for the request to complete
-              if (loading)
+              if (result.loading)
                 return (
                   <DataTableSkeleton
                     columnCount={headers.length + 1}
@@ -112,10 +114,10 @@ const RepoPage = () => {
                 );
 
               // Something went wrong with the data fetching
-              if (error) return `Error! ${error.message}`;
+              if (result.error) return `Error! ${result.error.message}`;
 
               // If we're here, we've got our data!
-              const { repositories } = organization;
+              const { repositories } = result.data.organization;
               setTotalItems(repositories.totalCount);
               const rows = getRowItems(repositories.nodes);
 

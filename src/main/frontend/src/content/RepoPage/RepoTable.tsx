@@ -10,19 +10,20 @@ import {
   TableBody,
   TableExpandRow,
   TableCell,
-  TableExpandedRow,
+  TableExpandedRow, TableExpandRowProps,
 } from 'carbon-components-react';
+import {RepoTableProps} from "./types";
 
-const RepoTable = ({ rows, headers }) => {
-  const getRowDescription = rowId => {
-    const row = rows.find(({ id }) => id === rowId);
+const RepoTable: React.FC<RepoTableProps> = (props) => {
+  const getRowDescription = (rowId: string) => {
+    const row = props.rows.find((res: any) => res.id === rowId);
     return row ? row.description : '';
   };
 
   return (
     <DataTable
-      rows={rows}
-      headers={headers}
+      rows={props.rows}
+      headers={props.headers}
       render={({
         rows,
         headers,
@@ -47,8 +48,8 @@ const RepoTable = ({ rows, headers }) => {
             <TableBody>
               {rows.map(row => (
                 <React.Fragment key={row.id}>
-                  <TableExpandRow {...getRowProps({ row })}>
-                    {row.cells.map(cell => (
+                  <TableExpandRow {...getRowProps({ row }) as TableExpandRowProps}>
+                    {row.cells.map((cell: any) => (
                       <TableCell key={cell.id}>{cell.value}</TableCell>
                     ))}
                   </TableExpandRow>
