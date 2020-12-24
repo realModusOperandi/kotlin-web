@@ -143,6 +143,9 @@ const LandingPage = () => {
 
   return (
     <div className="bx--grid bx--grid--full-width landing-page">
+      <div className="landing-page__toast">
+        { renderToast() }
+      </div>
       <div className="bx--row landing-page__banner">
         <div className="bx--col-lg-16">
           <Breadcrumb noTrailingSlash aria-label="Page navigation">
@@ -242,9 +245,6 @@ const LandingPage = () => {
             </Tab>
           </Tabs>
         </div>
-      </div>
-      <div className="landing-page__toast">
-        { renderToast() }
       </div>
     </div>
 

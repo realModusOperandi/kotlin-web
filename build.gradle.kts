@@ -1,18 +1,19 @@
 import com.moowork.gradle.node.npm.NpmTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import net.wasdev.wlp.gradle.plugins.extensions.ServerExtension
-import net.wasdev.wlp.gradle.plugins.extensions.FeatureExtension
+import io.openliberty.tools.gradle.extensions.ServerExtension
+import io.openliberty.tools.gradle.extensions.FeatureExtension
+
 
 plugins {
     war
-    id("net.wasdev.wlp.gradle.plugins.Liberty").version("2.6.5")
-    kotlin("jvm") version "1.3.72"
+    id("io.openliberty.tools.gradle.Liberty") version "3.1.1"
+    kotlin("jvm") version "1.4.21"
     id("com.github.node-gradle.node") version "2.2.4"
 }
 
 node {
-    version = "12.18.2"
-    npmVersion = "6.14.5"
+    version = "14.15.3"
+    npmVersion = "6.14.9"
     download = true
     workDir = file("$rootDir/src/main/frontend/node")
     nodeModulesDir = file("$rootDir/src/main/frontend")
@@ -63,26 +64,25 @@ repositories {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     providedCompile("org.eclipse.microprofile:microprofile:3.3")
     providedCompile("javax:javaee-api:8.0")
     
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 
-    libertyRuntime("io.openliberty:openliberty-runtime:20.0.0.6")
-
+    libertyRuntime("io.openliberty:openliberty-runtime:20.0.0.12")
 }
 
 val jmsPort by extra { "18000" }
 val jmsSslPort by extra { "18001" }
 
 liberty {
-    server = ServerExtension("defaultServer")
-    server.dropins = listOf(tasks["war"])
+    server = ServerExtension()
+    server.name = "defaultServer"
+    server.deploy.dropins = listOf(tasks["war"])
     server.features = FeatureExtension()
     server.features.name = listOf("microProfile-3.3")
-    server.bootstrapProperties = mapOf("jmsPort" to jmsPort, "jmsSslPort" to jmsSslPort)
+    server.bootstrapProperties = mapOf("jmsPort" to jmsPort, "jmsSslPort" to jmsSslPort).toProperties()
 }
 
 tasks["clean"].dependsOn(tasks["libertyStop"])
@@ -93,14 +93,14 @@ tasks["war"].dependsOn("copyFrontend")
 
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions {
-    jvmTarget = "1.8"
+    jvmTarget = "11"
 }
 
 val compileTestKotlin: KotlinCompile by tasks
 compileTestKotlin.kotlinOptions {
-    jvmTarget = "1.8"
+    jvmTarget = "11"
 }
 
 configure<JavaPluginConvention> {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
 }
